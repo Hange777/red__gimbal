@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "maths.h": "c",
+        "limits": "c",
+        "struct_typedef.h": "c",
+        "string.h": "c",
+        "pid.h": "c",
+        "rm_motor.h": "c",
+        "filter.h": "c"
+    }
+}

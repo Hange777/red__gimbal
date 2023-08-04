@@ -1,0 +1,13 @@
+red__gimbal\maths.o: ..\ACE-ECF\Algorithm\src\maths.c
+red__gimbal\maths.o: ../ACE-ECF/Algorithm/inc/maths.h
+red__gimbal\maths.o: ../ACE-ECF/Algorithm/inc/struct_typedef.h
+red__gimbal\maths.o: D:\keil\core\ARM\ARMCC\Bin\..\include\stddef.h
+red__gimbal\maths.o: ../Middlewares/ST/ARM/DSP/Inc/arm_math.h
+red__gimbal\maths.o: ../Drivers/CMSIS/Include/core_cm3.h
+red__gimbal\maths.o: D:\keil\core\ARM\ARMCC\Bin\..\include\stdint.h
+red__gimbal\maths.o: ../Drivers/CMSIS/Include/cmsis_version.h
+red__gimbal\maths.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
+red__gimbal\maths.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
+red__gimbal\maths.o: D:\keil\core\ARM\ARMCC\Bin\..\include\string.h
+red__gimbal\maths.o: D:\keil\core\ARM\ARMCC\Bin\..\include\math.h
+red__gimbal\maths.o: ../ACE-ECF/Algorithm/inc/list_of_function.h
