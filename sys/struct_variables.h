@@ -28,8 +28,10 @@ ___`. .' /--.--\ `. . __
 
 typedef enum
 {
-	ENABLE ,
-	STOP ,
+	TASK1 =1 ,
+	TASK2 =2,
+	TASK3 =3,
+	STOP  =4,
 }system_state_e;
 
 

@@ -39,3 +39,5 @@ red__gimbal\main.o: ../Middlewares/ST/ARM/DSP/Inc/arm_math.h
 red__gimbal\main.o: ../Drivers/CMSIS/Include/core_cm3.h
 red__gimbal\main.o: D:\keil\core\ARM\ARMCC\Bin\..\include\string.h
 red__gimbal\main.o: D:\keil\core\ARM\ARMCC\Bin\..\include\math.h
+red__gimbal\main.o: ../ACE-ECF/Algorithm/inc/maths.h
+red__gimbal\main.o: ../sys/struct_variables.h

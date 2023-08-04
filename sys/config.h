@@ -3,16 +3,20 @@
 
 #define PI2RAD 57.2957795f
 
-#define X_OFFSET 146.7f //pitch轴画布原点
-#define Y_OFFSET 130.0f//yaw轴画布原点
+#define X_OFFSET 131.0f //pitch轴画布原点
+#define Y_OFFSET 132.0f//yaw轴画布原点
 
 //#define PITCH_ZERO  0x05D0
 #define PITCH_ZERO_ANGLE  130.0f //pitch世界水平原点
 
-//单位厘米，左上为正
-//#define CAMERA_X_ZERO 
-//#define CAMERA_Y_ZERO 
+//相机像素
+#define CAMERA_X 85.0f
+#define CAMERA_Y 85.0f
 
-//#define CAMERA2CANVAS 
+#define CANVAS_X 50.0f
+#define CANVAS_Y 50.0f
+
+#define CAM2CAN_X CANVAS_X/CAMERA_X
+#define CAM2CAN_Y CANVAS_Y/CAMERA_Y
 
 #endif

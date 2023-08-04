@@ -28,6 +28,8 @@
 #include "config.h"
 #include "pid.h"
 #include "arm_math.h"
+#include "maths.h"
+#include "struct_variables.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,6 +60,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+system_state_e system_state;
 float yaw_angle = Y_OFFSET;
 float pitch_angle = X_OFFSET;
 pid_parameter_t pid_y;
@@ -68,25 +71,35 @@ float x_angle=0;
 float y_angle=0;
 #define x1 9.5f
 #define y1 14.7f
-float pointlist[][2]=
+
+float task1list[][2]=
 {
 	0,0,
-	25,0,
 	25,25,
-	-25,25,
-	-25,-25,
-	25,-25,
-	25,1,
-	0,1,
-	x1,y1+0.8,
-	-x1,y1+0.8,
-	-x1,-y1,
-	x1,-y1,
-	x1,y1+0.8,
 	127,127
 };
-float* listpoint = &pointlist[0][0];
+float* task1list_p = &task1list[0][0];
 
+float task2list[][2]=
+{
+	0,0,
+	26,0,
+	26,26,
+	-25,26,
+	-25,-25,
+	26,-25,
+	26,1,
+	0,1,
+//	x1,y1+0.8,
+//	-x1,y1+0.8,
+//	-x1,-y1,
+//	x1,-y1,
+//	x1,y1+0.8,
+	127,127
+};
+float* task2list_p = &task2list[0][0];
+
+volatile uint8_t usart_even = 0;
 int autolist[5][2]=
 {
 	0,0,
@@ -96,9 +109,19 @@ int autolist[5][2]=
 	127,127
 };
 int* autopoint = &autolist[0][0];
-
+float autopointlist[][2]=
+{
+	0,0,
+	0,0,
+	0,0,
+	0,0,
+	0,0,
+//	25,25,
+	127,127
+};
+float* autopointpoint = &autopointlist[0][0];
 uint8_t usart_rec[40];
-uint8_t turn_flag=0;
+uint8_t turn_flag=1;
 /* USER CODE END 0 */
 
 /**
@@ -132,14 +155,14 @@ int main(void)
   MX_TIM4_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-	
-  HAL_UART_Receive_IT(&huart1, usart_rec, 35);
+	system_state = TASK3;
+  HAL_UART_Receive_IT(&huart1, usart_rec, 28);
 	/*-------------------------------------------------------------------------pid--------------------------------------------------------------------------*/
 	PidInit(&pid_y,1,0,10,StepIn);
-	PidInitMode(&pid_y,StepIn,0.0002f,0);
+	PidInitMode(&pid_y,StepIn,0.00009f,0);
 	pid_y.LastSetValue = 0.025f + PER_ANGLE*Y_OFFSET;
 	PidInit(&pid_x,1,0,10,StepIn);
-	PidInitMode(&pid_x,StepIn,0.0002f,0);
+	PidInitMode(&pid_x,StepIn,0.00009f,0);
 	pid_x.LastSetValue = 0.025f + PER_ANGLE*X_OFFSET;
 	/*-------------------------------------------------------------------------servos--------------------------------------------------------------------------*/
 	servos_start(&htim4,TIM_CHANNEL_1);//pitch
@@ -152,16 +175,119 @@ int main(void)
 	volatile uint32_t count=0;
   while (1)
   {
+		/*-------------------------------------------------------------------------data_deal--------------------------------------------------------------------------*/
+		if(usart_even)
+		{
+			if(usart_rec[0]=='f'
+			 &&usart_rec[1]=='f'
+			&&usart_rec[26]=='e'
+			&&usart_rec[27]=='e')
+			{
+				int* j = &autolist[0][0];
+				for(int i = 2;i<27;i+=3)
+				{
+					*j=(usart_rec[i]-48)*100 + (usart_rec[i+1]-48)*10 + (usart_rec[i+2]-48)*1;
+					j++;
+				}
+				
+				j = &autolist[0][0];
+				float* k = &autopointlist[0][0];
+				for(int i = 0;i<4;i++)
+				{
+					*k++ = 1.09f*(-(*j++ * CAM2CAN_Y - 25 )) + 0.2f;
+					*k++ = 1.09f*(-(*j++ * CAM2CAN_X - 25 )) - 0.1f;
+				}
+				autopointlist[4][0] = autopointlist[0][0];
+				autopointlist[4][1] = autopointlist[0][1];
+			}
+			else
+			{
+				HAL_UART_AbortReceive_IT(&huart1);
+				HAL_UART_Receive_IT(&huart1, usart_rec, 28);
+			}
+			usart_even=0;
+		}
+		
+		
+		
+	/*-------------------------------------------------------------------------cmd--------------------------------------------------------------------------*/
+
+		count++;
+		switch(system_state)
+		{
+			case TASK1:
+			{
+				if(count>=150 && turn_flag)
+					{
+					if(*task1list_p==127)
+					{
+						task1list_p = &task1list[0][0];
+						turn_flag=0;
+					}
+					y=*task1list_p++;
+					x=*task1list_p++;
+
+					count = 0;
+				}
+				break;
+			}
+			case TASK2:
+			{
+				if(count>=200 && turn_flag)
+					{
+						if(*task2list_p==127)
+						{
+							task2list_p = &task2list[0][0];
+							turn_flag=0;
+						}
+						y=*task2list_p++;
+						x=*task2list_p++;
+
+						count = 0;
+					}
+					break;
+			}
+			case TASK3:
+			{
+				static float k = 0;
+				static float delat_x = 0;
+				static float tempx,tempy;
+				if(count>=175 && 1)
+				{
+					if(*autopointpoint==127)
+					{
+						autopointpoint = &autopointlist[0][0];
+						turn_flag=0;
+					}
+					k = (y-*autopointpoint) / (x- *(autopointpoint+1));
+					delat_x = (*(autopointpoint+1) - x) / 175.0f;
+					tempy=*autopointpoint++;
+					tempx=*autopointpoint++;
+					count = 0;
+				}
+				x += delat_x;
+				y += delat_x*k;
+				break;
+			}
+			case STOP:
+			{
+				servos_stop(&htim4,TIM_CHANNEL_1);//pitch
+				servos_stop(&htim4,TIM_CHANNEL_2);//yaw
+				break;
+			}
+		}
+		value_limit(x,-30.0f,30.0f);
+		value_limit(y,-30.0f,30.0f);
 		/*-------------------------------------------------------------------------yaw--------------------------------------------------------------------------*/
-		y*=1.05f;
+		y*=1.02f;
 		y_angle = PI2RAD * atan2(y,100);
 		float yaw_control=0.025f + PER_ANGLE * yaw_angle + PER_ANGLE * y_angle;
 		float yaw_control_out;
 		yaw_control_out = PidCalculate(&pid_y,yaw_control,0);
 		PWMSetDutyRatio(&htim4,TIM_CHANNEL_2,yaw_control_out);
-		y/=1.05f;
+		y/=1.02f;
 		/*-------------------------------------------------------------------------pitch--------------------------------------------------------------------------*/
-		x*=0.94f;
+		x*=0.95f;
 		if(x>-tan((X_OFFSET-PITCH_ZERO_ANGLE)/PI2RAD)*100)
 		{
 			x_angle = PI2RAD *atan2(tan((X_OFFSET-PITCH_ZERO_ANGLE)/PI2RAD)*100 + x,100);
@@ -176,21 +302,10 @@ int main(void)
 		float pitch_control_out;
 		pitch_control_out = PidCalculate(&pid_x,pitch_control,0);
 		PWMSetDutyRatio(&htim4,TIM_CHANNEL_1,pitch_control_out);
-		x/=0.94f;
-		/*-------------------------------------------------------------------------cmd--------------------------------------------------------------------------*/
-		count++;
-		if(count>=150 && 1)
-		{
-			if(*listpoint==127)
-			{
-				listpoint = &pointlist[0][0];
-				turn_flag=0;
-			}
-			y=*listpoint++;
-			x=*listpoint++;
+		x/=0.95f;
 
-			count = 0;
-		}
+		
+
 		HAL_Delay(1);
     /* USER CODE END WHILE */
 
@@ -245,19 +360,24 @@ void SystemClock_Config(void)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if(huart->Instance == USART1){
-		if(usart_rec[0]=='f'
-		 &&usart_rec[1]=='f'
-	 	&&usart_rec[33]=='e'
-		&&usart_rec[34]=='e')
-		{
-			int* j = &autolist[0][0];
-			for(int i = 2;i<33;i+=4)
-			{
-				*j=(usart_rec[i]-48)*100 + (usart_rec[i+1]-48)*10 + (usart_rec[i+2]-48)*1;
-				j++;
-			}
-		}
-		while(HAL_OK == HAL_UART_Receive_IT(&huart1, usart_rec, 35));
+		usart_even = 1;
+		while(HAL_OK == HAL_UART_Receive_IT(&huart1, usart_rec, 28));
+//		if(usart_rec[0]=='f')
+//		{
+//			volatile int i = 1;
+//			HAL_StatusTypeDef state;
+//			do
+//			{
+//				if(i>=36)
+//				{
+//					break;
+//				}
+//				state = HAL_UART_Receive(&huart1,&usart_rec[i],1,0);
+//				i++;
+//			}
+//			while(state == HAL_OK);
+//		}
+//		while(HAL_OK == HAL_UART_Receive_IT(&huart1, usart_rec, 1));
 	}
 }
 /* USER CODE END 4 */

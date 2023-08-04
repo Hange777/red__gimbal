@@ -1,7 +1,7 @@
 Dependencies for Project 'red__gimbal', Target 'red__gimbal': (DO NOT MODIFY !)
 CompilerVersion: 5060960::V5.06 update 7 (build 960)::.\ARMCC
 F (startup_stm32f103xb.s)(0x64CB26EE)(--cpu Cortex-M3 -g --apcs=interwork -I.\RTE\_red__gimbal-ID:\keil\package\ARM\CMSIS\5.8.0\CMSIS\Core\Include-ID:\keil\package\Keil\STM32F1xx_DFP\2.3.0\Device\Include--pd "__UVISION_VERSION SETA 535" --pd "_RTE_ SETA 1" --pd "STM32F10X_MD SETA 1" --pd "_RTE_ SETA 1"--list startup_stm32f103xb.lst --xref -o red__gimbal\startup_stm32f103xb.o --depend red__gimbal\startup_stm32f103xb.d)
-F (../Core/Src/main.c)(0x64CC8EE2)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../bsp/pwm -I ../modules -I ../sys -I ../ACE-ECF/Algorithm/inc -I ../Middlewares/ST/ARM/DSP/Inc-I.\RTE\_red__gimbal-ID:\keil\package\ARM\CMSIS\5.8.0\CMSIS\Core\Include-ID:\keil\package\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="535" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB -DARM_MATH_CM3-o red__gimbal\main.o --omf_browse red__gimbal\main.crf --depend red__gimbal\main.d)
+F (../Core/Src/main.c)(0x64CCDC23)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../bsp/pwm -I ../modules -I ../sys -I ../ACE-ECF/Algorithm/inc -I ../Middlewares/ST/ARM/DSP/Inc-I.\RTE\_red__gimbal-ID:\keil\package\ARM\CMSIS\5.8.0\CMSIS\Core\Include-ID:\keil\package\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="535" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB -DARM_MATH_CM3-o red__gimbal\main.o --omf_browse red__gimbal\main.crf --depend red__gimbal\main.d)
 I (../Core/Inc/main.h)(0x64CA0836)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x62CD31DD)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x64CB26EC)
@@ -34,12 +34,14 @@ I (../Core/Inc/tim.h)(0x64CA0836)
 I (../Core/Inc/usart.h)(0x64CB26EB)
 I (../Core/Inc/gpio.h)(0x64CA0836)
 I (../modules/Servos.h)(0x64CA7A47)
-I (../sys/config.h)(0x64CC8D71)
+I (../sys/config.h)(0x64CCBCCA)
 I (../ACE-ECF/Algorithm/inc/pid.h)(0x6475E181)
 I (../ACE-ECF/Algorithm/inc/struct_typedef.h)(0x6475E181)
 I (../Middlewares/ST/ARM/DSP/Inc/arm_math.h)(0x6329A963)
 I (D:\keil\core\ARM\ARMCC\include\string.h)(0x6025237E)
 I (D:\keil\core\ARM\ARMCC\include\math.h)(0x60252378)
+I (../ACE-ECF/Algorithm/inc/maths.h)(0x6475E181)
+I (../sys/struct_variables.h)(0x64CCC1FC)
 F (../Core/Src/gpio.c)(0x64CA0836)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../bsp/pwm -I ../modules -I ../sys -I ../ACE-ECF/Algorithm/inc -I ../Middlewares/ST/ARM/DSP/Inc-I.\RTE\_red__gimbal-ID:\keil\package\ARM\CMSIS\5.8.0\CMSIS\Core\Include-ID:\keil\package\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="535" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB -DARM_MATH_CM3-o red__gimbal\gpio.o --omf_browse red__gimbal\gpio.crf --depend red__gimbal\gpio.d)
 I (../Core/Inc/gpio.h)(0x64CA0836)
 I (../Core/Inc/main.h)(0x64CA0836)
@@ -640,8 +642,8 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h)(0x62CD31DD)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h)(0x62CD31DD)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h)(0x62CD31DD)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h)(0x62CD31DD)
-F (..\sys\config.h)(0x64CC8D71)()
-F (..\sys\struct_variables.h)(0x64C9B259)()
+F (..\sys\config.h)(0x64CCBCCA)()
+F (..\sys\struct_variables.h)(0x64CCC1FC)()
 F (..\ACE-ECF\Algorithm\src\pid.c)(0x6475E181)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../bsp/pwm -I ../modules -I ../sys -I ../ACE-ECF/Algorithm/inc -I ../Middlewares/ST/ARM/DSP/Inc-I.\RTE\_red__gimbal-ID:\keil\package\ARM\CMSIS\5.8.0\CMSIS\Core\Include-ID:\keil\package\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="535" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB -DARM_MATH_CM3-o red__gimbal\pid.o --omf_browse red__gimbal\pid.crf --depend red__gimbal\pid.d)
 I (..\ACE-ECF\Algorithm\inc\pid.h)(0x6475E181)
 I (..\ACE-ECF\Algorithm\inc\struct_typedef.h)(0x6475E181)
