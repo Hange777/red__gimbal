@@ -32,6 +32,7 @@ typedef enum
 	TASK2 =2,
 	TASK3 =3,
 	STOP  =4,
+//	SWITCH_EVEN = 5,
 }system_state_e;
 
 

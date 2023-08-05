@@ -117,12 +117,15 @@ float autopointlist[][2]=
 	0,0,
 	0,0,
 	0,0,
-25,25,
+//	25,25,
 	127,127
 };
 float* autopointpoint = &autopointlist[0][0];
 uint8_t usart_rec[40];
 uint8_t turn_flag=1;
+GPIO_PinState KEY1;
+GPIO_PinState KEY2;
+GPIO_PinState KEY3;
 /* USER CODE END 0 */
 
 /**
@@ -157,15 +160,15 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 	
-	system_state = TASK3;
+	system_state = TASK1;
 	
   HAL_UART_Receive_IT(&huart1, usart_rec, 28);
 	/*-------------------------------------------------------------------------pid--------------------------------------------------------------------------*/
 	PidInit(&pid_y,1,0,10,StepIn);
-	PidInitMode(&pid_y,StepIn,0.0001f,0);
+	PidInitMode(&pid_y,StepIn,0.0005f,0);
 	pid_y.LastSetValue = 0.025f + PER_ANGLE*Y_OFFSET;
 	PidInit(&pid_x,1,0,10,StepIn);
-	PidInitMode(&pid_x,StepIn,0.0001f,0);
+	PidInitMode(&pid_x,StepIn,0.0005f,0);
 	pid_x.LastSetValue = 0.025f + PER_ANGLE*X_OFFSET;
 	/*-------------------------------------------------------------------------servos--------------------------------------------------------------------------*/
 	servos_start(&htim4,TIM_CHANNEL_1);//pitch
@@ -176,8 +179,56 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	volatile uint32_t count=0;
+	volatile int task3_stop = 0;
   while (1)
   {
+		static system_state_e last_system_state;
+		/*-------------------------------------------------------------------------key_deal--------------------------------------------------------------------------*/
+		KEY1 = !HAL_GPIO_ReadPin(KEY_1_GPIO_Port,KEY_1_Pin);
+		KEY2 = !HAL_GPIO_ReadPin(KEY_2_GPIO_Port,KEY_2_Pin);
+		KEY3 = !HAL_GPIO_ReadPin(KEY_3_GPIO_Port,KEY_3_Pin);
+		if(KEY1)
+		{
+			last_system_state = STOP;
+			system_state = TASK1;
+		}
+		if(KEY3)
+		{
+			if(system_state == TASK2)
+			{
+				last_system_state = STOP;
+				system_state = TASK3;
+			}
+			else
+			{
+				last_system_state = STOP;
+				system_state = TASK2;
+			}
+			
+		}
+		if(KEY2)
+		{
+			if(system_state == TASK3)
+			{
+				task3_stop = 1;
+//				servos_stop(&htim4,TIM_CHANNEL_1);//pitch
+//				servos_stop(&htim4,TIM_CHANNEL_2);//yaw
+			}
+			else
+			{
+				last_system_state = STOP;
+				system_state = STOP;
+			}
+		}
+		else
+		{
+			if(system_state == TASK3)
+			{
+				task3_stop = 0;
+//				servos_start(&htim4,TIM_CHANNEL_1);//pitch
+//				servos_start(&htim4,TIM_CHANNEL_2);//yaw
+			}
+		}
 		/*-------------------------------------------------------------------------data_deal--------------------------------------------------------------------------*/
 		if(usart_even)
 		{
@@ -186,22 +237,25 @@ int main(void)
 			&&usart_rec[26]=='e'
 			&&usart_rec[27]=='e')
 			{
-				int* j = &autolist[0][0];
-				for(int i = 2;i<27;i+=3)
-				{
-					*j=(usart_rec[i]-48)*100 + (usart_rec[i+1]-48)*10 + (usart_rec[i+2]-48)*1;
-					j++;
-				}
-				
-				j = &autolist[0][0];
-				float* k = &autopointlist[0][0];
-				for(int i = 0;i<4;i++)
-				{
-					*k++ = CAMERA_Y_GAIN *(-(*j++ * CAM2CAN_Y - 25   )) + CAMERA_Y_OFFSET;
-					*k++ = CAMERA_X_GAIN *(-(*j++ * CAM2CAN_X - 25 -4)) + CAMERA_X_OFFSET;
-				}
-				autopointlist[4][0] = autopointlist[0][0];
-				autopointlist[4][1] = autopointlist[0][1];
+//				if(system_state != TASK3)
+//				{
+					int* j = &autolist[0][0];
+					for(int i = 2;i<27;i+=3)
+					{
+						*j=(usart_rec[i]-48)*100 + (usart_rec[i+1]-48)*10 + (usart_rec[i+2]-48)*1;
+						j++;
+					}
+					
+					j = &autolist[0][0];
+					float* k = &autopointlist[0][0];
+					for(int i = 0;i<4;i++)
+					{
+						*k++ = CAMERA_Y_GAIN *(-(*j++ * CAM2CAN_Y - 25   )) + CAMERA_Y_OFFSET;
+						*k++ = CAMERA_X_GAIN *(-(*j++ * CAM2CAN_X - 25 -4)) + CAMERA_X_OFFSET;
+					}
+					autopointlist[4][0] = autopointlist[0][0];
+					autopointlist[4][1] = autopointlist[0][1];
+//				}
 			}
 			else
 			{
@@ -216,16 +270,21 @@ int main(void)
 	/*-------------------------------------------------------------------------cmd--------------------------------------------------------------------------*/
 
 		count++;
-		turn_flag=1;
-		static system_state_e last_system_state;
+//		turn_flag=1;
 		if(last_system_state!=system_state)
 		{
+			if(last_system_state == STOP )
+			{
+					servos_start(&htim4,TIM_CHANNEL_1);//pitch
+					servos_start(&htim4,TIM_CHANNEL_2);//yaw
+			}
 			task1list_p = &task1list[0][0];
 			task2list_p = &task2list[0][0];
 			autopointpoint = &autopointlist[0][0];
 			x=25;
 			y=25;
 			count=100000;
+			turn_flag=1;
 		}
 		last_system_state = system_state;
 		switch(system_state)
@@ -272,24 +331,34 @@ int main(void)
 			{
 				static float k = 0;
 				static float delat_x = 0;
-				if(count>=750 && 1)
+				if(task3_stop == 0)
 				{
-					if(*autopointpoint==127)
+					if(count>=350 && turn_flag)
 					{
-						autopointpoint = &autopointlist[0][0];
-						turn_flag=0;
-//						system_state = TASK1;
+						if(*autopointpoint==127)
+						{
+							autopointpoint = &autopointlist[0][0];
+							turn_flag=0;
+	//						system_state = TASK1;
+							count = 0;
+							break;
+						}
+						k = (y-*autopointpoint) / (x- *(autopointpoint+1));
+						delat_x = (*(autopointpoint+1) - x) / 350.0f;
+						autopointpoint++;
+						autopointpoint++;
 						count = 0;
-						break;
 					}
-					k = (y-*autopointpoint) / (x- *(autopointpoint+1));
-					delat_x = (*(autopointpoint+1) - x) / 750.0f;
-					autopointpoint++;
-					autopointpoint++;
-					count = 0;
+					if(turn_flag)
+					{
+						x += delat_x;
+						y += delat_x*k;
+					}
 				}
-				x += delat_x;
-				y += delat_x*k;
+				else
+				{
+					count--;
+				}
 				break;
 			}
 			case STOP:

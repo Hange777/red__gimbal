@@ -21,7 +21,7 @@
 
 
 #define CAMERA_X_GAIN 1.14f
-#define CAMERA_Y_GAIN 1.09f
-#define CAMERA_Y_OFFSET 0.0f
-#define CAMERA_X_OFFSET 0.7f
+#define CAMERA_Y_GAIN 1.04f
+#define CAMERA_Y_OFFSET -0.4f
+#define CAMERA_X_OFFSET 0.4f
 #endif

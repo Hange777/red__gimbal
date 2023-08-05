@@ -22,12 +22,23 @@ Dialog DLL:      TCM.DLL V1.53.0.0
  
 <h2>Project:</h2>
 D:\daima\red__gimbal\MDK-ARM\red__gimbal.uvprojx
-Project File Date:  08/03/2023
+Project File Date:  08/05/2023
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'D:\keil\core\ARM\ARMCC\Bin'
 Build target 'red__gimbal'
-"red__gimbal\red__gimbal.axf" - 0 Error(s), 0 Warning(s).
+compiling main.c...
+../Core/Src/main.c(187): warning:  #188-D: enumerated type mixed with another type
+  		KEY1 = !HAL_GPIO_ReadPin(KEY_1_GPIO_Port,KEY_1_Pin);
+../Core/Src/main.c(188): warning:  #188-D: enumerated type mixed with another type
+  		KEY2 = !HAL_GPIO_ReadPin(KEY_2_GPIO_Port,KEY_2_Pin);
+../Core/Src/main.c(189): warning:  #188-D: enumerated type mixed with another type
+  		KEY3 = !HAL_GPIO_ReadPin(KEY_3_GPIO_Port,KEY_3_Pin);
+../Core/Src/main.c: 3 warnings, 0 errors
+linking...
+Program Size: Code=16434 RO-data=750 RW-data=240 ZI-data=4664  
+FromELF: creating hex file...
+"red__gimbal\red__gimbal.axf" - 0 Error(s), 3 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -51,7 +62,7 @@ Package Vendor: Keil
 
    * Component: ARM::CMSIS:CORE:5.5.0
       Include file:  CMSIS\Core\Include\tz_context.h
-Build Time Elapsed:  00:00:00
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>
