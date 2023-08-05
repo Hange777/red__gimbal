@@ -12,7 +12,7 @@ yaw = atan2(x/L)
 $$
 
 $$
-pitch = atan2(tan(((pitch1-pitch0)*L+y)/L)
+pitch = atan2(tan((pitch1-pitch0)*L+y)/L)
 $$
 
 于是我们便可以将屏幕上的x，y位置转换为云台的pitch和yaw。
