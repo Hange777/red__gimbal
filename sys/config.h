@@ -3,7 +3,7 @@
 
 #define PI2RAD 57.2957795f
 
-#define X_OFFSET 131.0f //pitch轴画布原点
+#define X_OFFSET 129.5f //pitch轴画布原点
 #define Y_OFFSET 132.0f//yaw轴画布原点
 
 //#define PITCH_ZERO  0x05D0
@@ -19,4 +19,9 @@
 #define CAM2CAN_X CANVAS_X/CAMERA_X
 #define CAM2CAN_Y CANVAS_Y/CAMERA_Y
 
+
+#define CAMERA_X_GAIN 1.14f
+#define CAMERA_Y_GAIN 1.09f
+#define CAMERA_Y_OFFSET 0.0f
+#define CAMERA_X_OFFSET 0.7f
 #endif
